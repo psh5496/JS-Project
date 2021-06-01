@@ -5,11 +5,24 @@ let posts; // api를 통해 받아온 객체 배열
 let totalPage; // 총 페이지 수
 const DOMAIN = 'https://jsonplaceholder.typicode.com/';
 
-const setPageNum = (totalPage, PAGE_PER_BAR, currentPage) => {
-    console.log(totalPage);
-    console.log(PAGE_PER_BAR);
-    console.log(currentPage);
+const getPageNum = (currentPage) => {
+    const half = Math.floor(PAGE_PER_BAR / 2);
+    let start;
+    if(currentPage < 3) {
+        start = 1;
+    } else if(currentPage > totalPage - half) {
+        start = (totalPage - PAGE_PER_BAR) + 1;
+    } else {
+        start = currentPage - half;
+    }
+    setPageNum(Array.from({length: PAGE_PER_BAR}, (_, i) => start + i));
 };
+
+const setPageNum = (pages) => {
+    for(let i=0; i < PAGE_PER_BAR; i++) {
+        $pageNum[i].innerText = pages[i];
+    }
+}
 
 const setPageInfo = ({ data }) => {
     posts = data;
@@ -25,7 +38,7 @@ getPosts();
 
 for (let i = 0; i < PAGE_PER_BAR; i++) {
     $pageNum[i].addEventListener('click', () => {
-        setPageNum(totalPage, PAGE_PER_BAR, i + 1);
+        getPageNum($pageNum[i].innerText);
         for (let j = 0; j < PAGE_PER_BAR; j++) {
             $pageNum[j].classList.remove('active');
         }
